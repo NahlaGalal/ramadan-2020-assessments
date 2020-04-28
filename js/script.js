@@ -1,4 +1,5 @@
 const form = document.querySelector("form");
+
 let request;
 if (window.XMLHttpRequest) {
   request = new XMLHttpRequest();
@@ -41,16 +42,20 @@ const getVideoesList = () => {
             </p>
           </div>
           <div class="d-flex flex-column text-center">
-            <a class="btn btn-link">🔺</a>
+            <a class="btn btn-link" onclick="voteVideo('ups', '${
+              element._id
+            }')">🔺</a>
             <h3>${element.votes.ups - element.votes.downs}</h3>
-            <a class="btn btn-link">🔻</a>
+            <a class="btn btn-link" onclick="voteVideo('downs', '${
+              element._id
+            }')">🔻</a>
           </div>
         </div>
         <div class="card-footer d-flex flex-row justify-content-between">
           <div>
             <span class="text-info">${element.status}</span>
             &bullet; added by <strong>${element.author_name}</strong> on
-            <strong>${new Date(element.update_date).toDateString()}</strong>
+            <strong>${new Date(element.submit_date).toDateString()}</strong>
           </div>
           <div class="d-flex justify-content-center flex-column 408ml-auto mr-2">
             <div class="badge badge-success">${element.target_level}</div>
@@ -64,6 +69,18 @@ const getVideoesList = () => {
 };
 
 window.addEventListener("load", getVideoesList);
+
+const voteVideo = (vote_type, id) => {
+  request.open("PUT", "http://localhost:7777/video-request/vote");
+  request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  request.send(`id=${id}&vote_type=${vote_type}`);
+  request.onreadystatechange = () => {
+    if (request.status === 200 && request.readyState === 4) {
+      console.log(request.responseText);
+      getVideoesList();
+    }
+  };
+};
 
 /**
  * 
