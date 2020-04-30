@@ -61,7 +61,6 @@
             </div>
           </div>
         </div>
-
         <button type="submit" class="btn btn-success mt-3">
           Send video request
         </button>
@@ -69,6 +68,21 @@
     </div>
     <hr />
     <h1 class="mb-4">List of requested videos</h1>
+    <div class="row justify-content-between">
+      <div class="col-lg-4 col-md-6 col-12 mb-3">
+        <button class="btn btn-primary active date-sort">New first</button>
+        <button class="btn btn-primary vote-sort">Top voted first</button>
+      </div>
+      <div class="col-lg-4 col-md-6 col-12 mb-3">
+        <button class="btn btn-primary active">All</button>
+        <button class="btn btn-primary">New</button>
+        <button class="btn btn-primary">Planned</button>
+        <button class="btn btn-primary">Done</button>
+      </div>
+      <div class="col-lg-4 col-md-6 col-12 mb-3">
+        <input type="search" name="search" id="search" placeholder="Search requests here" class="form-control">
+      </div>
+    </div>
     <div id="listOfRequests">
     </div>
   </div>
