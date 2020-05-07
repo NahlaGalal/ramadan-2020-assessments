@@ -12,8 +12,7 @@ module.exports = {
 
   searchRequests: (topic) => {
     return VideoRequest.find({ topic_title: topic })
-      .sort({ addedAt: "-1" })
-      .limit(top);
+      .sort({ addedAt: "-1" });
   },
 
   getRequestById: (id) => {
@@ -36,7 +35,7 @@ module.exports = {
         },
       },
       {
-        new: true,
+        new: true
       }
     );
   },

@@ -2,6 +2,7 @@ const form = document.querySelector("form");
 const dateSort = document.querySelector(".date-sort");
 const voteSort = document.querySelector(".vote-sort");
 const box = document.getElementById("listOfRequests");
+const seachInput = document.getElementById("search");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -20,19 +21,10 @@ form.addEventListener("submit", (e) => {
   };
 });
 
-const getVideoesList = (sort_type = "date") => {
-  fetch(`http://localhost:7777/video-request?sort_type=${sort_type}`, {
-    method: "GET",
-    // params: {
-    //   sort_type,
-    // },
-    
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      box.innerHTML = "";
-      res.forEach((element) => {
-        box.innerHTML += `<div class="card mb-3" id=${element._id}>
+const insertVideos = (res) => {
+  box.innerHTML = "";
+  res.forEach((element) => {
+    box.innerHTML += `<div class="card mb-3" id=${element._id}>
       <div class="card-body d-flex justify-content-between flex-row">
         <div class="d-flex flex-column">
           <h3>${element.topic_title}</h3>
@@ -69,8 +61,15 @@ const getVideoesList = (sort_type = "date") => {
         </div>
       </div>
     </div>`;
-      });
-    });
+  });
+};
+
+const getVideoesList = (sort_type = "date") => {
+  fetch(`http://localhost:7777/video-request?sort_type=${sort_type}`, {
+    method: "GET",
+  })
+    .then((res) => res.json())
+    .then((res) => insertVideos(res));
 };
 
 window.addEventListener("load", () => getVideoesList());
@@ -98,4 +97,14 @@ voteSort.addEventListener("click", () => {
   dateSort.classList.remove("active");
   voteSort.classList.add("active");
   getVideoesList("vote");
+});
+
+seachInput.addEventListener("keyup", (e) => {
+  if(e.target.value) {
+    fetch(`http://localhost:7777/video-request/search?topic=${e.target.value}`, {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((res) => insertVideos(res));
+  } else getVideoesList();
 });

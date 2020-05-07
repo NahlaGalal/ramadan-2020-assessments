@@ -23,8 +23,7 @@ app.post("/video-request", async (req, res, next) => {
 });
 
 app.get("/video-request", async (req, res, next) => {
-  const { sort_type } = req.params;
-  console.log(req.params)
+  const { sort_type } = req.query;
   let data = await VideoRequestData.getAllVideoRequests();
   if (sort_type === "vote") {
     data = data.sort((a, b) => {
@@ -69,6 +68,13 @@ app.delete("/video-request", async (req, res, next) => {
   res.send(response);
   next();
 });
+
+app.get("/video-request/search", async (req, res, next) => {
+  const { topic } = req.query;
+  const response = await VideoRequestData.searchRequests(topic);
+  res.send(response);
+  next();
+})
 
 app.listen(port, () =>
   console.log(`Example app listening at http://localhost:${port}`)
