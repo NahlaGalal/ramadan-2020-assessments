@@ -3,6 +3,16 @@ const dateSort = document.querySelector(".date-sort");
 const voteSort = document.querySelector(".vote-sort");
 const box = document.getElementById("listOfRequests");
 const seachInput = document.getElementById("search");
+let sort_type = "date",
+  search = "";
+
+function debounce(fn, time) {
+  let timeOut;
+  return function (...args) {
+    clearTimeout(timeOut)
+    timeOut = setTimeout(() => fn.apply(this, args), time);
+  };
+}
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -18,7 +28,7 @@ form.addEventListener("submit", (e) => {
     headers: {
       "Content-Type": "application/json",
     },
-  }).then(() => getVideoesList());
+  }).then(() => getVideoesList(sort_type, search));
 });
 
 const insertVideos = (res) => {
@@ -64,10 +74,13 @@ const insertVideos = (res) => {
   });
 };
 
-const getVideoesList = (sort_type = "date") => {
-  fetch(`http://localhost:7777/video-request?sort_type=${sort_type}`, {
-    method: "GET",
-  })
+const getVideoesList = (sort_type = "date", search = "") => {
+  fetch(
+    `http://localhost:7777/video-request?sort_type=${sort_type}&topic=${search}`,
+    {
+      method: "GET",
+    }
+  )
     .then((res) => res.json())
     .then((res) => insertVideos(res));
 };
@@ -78,11 +91,12 @@ const voteVideo = (vote_type, id) => {
   fetch("http://localhost:7777/video-request/vote", {
     method: "PUT",
     body: JSON.stringify({
-      id, vote_type
+      id,
+      vote_type,
     }),
     headers: {
-      "Content-Type": "application/json"
-    }
+      "Content-Type": "application/json",
+    },
   })
     .then((res) => res.json())
     .then((res) => {
@@ -95,24 +109,18 @@ const voteVideo = (vote_type, id) => {
 dateSort.addEventListener("click", () => {
   dateSort.classList.add("active");
   voteSort.classList.remove("active");
-  getVideoesList();
+  sort_type = "date";
+  getVideoesList("date", search);
 });
 
 voteSort.addEventListener("click", () => {
   dateSort.classList.remove("active");
   voteSort.classList.add("active");
-  getVideoesList("vote");
+  sort_type = "vote";
+  getVideoesList("vote", search);
 });
 
-seachInput.addEventListener("keyup", (e) => {
-  if (e.target.value) {
-    fetch(
-      `http://localhost:7777/video-request/search?topic=${e.target.value}`,
-      {
-        method: "GET",
-      }
-    )
-      .then((res) => res.json())
-      .then((res) => insertVideos(res));
-  } else getVideoesList();
-});
+seachInput.addEventListener("keyup", debounce((e) => {
+  search = e.target.value;
+  getVideoesList(sort_type, e.target.value);
+}, 300));

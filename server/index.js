@@ -17,7 +17,6 @@ app.get("/", (req, res) =>
   res.send("Welcome to semicolon academy APIs, use /video-request to get data")
 );
 
-
 app.post("/video-request", async (req, res, next) => {
   const response = await VideoRequestData.createRequest(req.body);
   res.send(response);
@@ -25,8 +24,11 @@ app.post("/video-request", async (req, res, next) => {
 });
 
 app.get("/video-request", async (req, res, next) => {
-  const { sort_type } = req.query;
-  let data = await VideoRequestData.getAllVideoRequests();
+  const { sort_type, topic } = req.query;
+  let data;
+  if (topic) {
+    data = await VideoRequestData.searchRequests(topic);
+  } else data = await VideoRequestData.getAllVideoRequests();
   if (sort_type === "vote") {
     data = data.sort((a, b) => {
       let aVotes = a.votes.ups - a.votes.downs;
@@ -56,8 +58,6 @@ app.post("/users/login", async (req, res, next) => {
   next();
 });
 
-app.use(express.json());
-
 app.put("/video-request/vote", async (req, res, next) => {
   const { id, vote_type } = req.body;
   const response = await VideoRequestData.updateVoteForRequest(id, vote_type);
@@ -70,13 +70,6 @@ app.delete("/video-request", async (req, res, next) => {
   res.send(response);
   next();
 });
-
-app.get("/video-request/search", async (req, res, next) => {
-  const { topic } = req.query;
-  const response = await VideoRequestData.searchRequests(topic);
-  res.send(response);
-  next();
-})
 
 app.listen(port, () =>
   console.log(`Example app listening at http://localhost:${port}`)
