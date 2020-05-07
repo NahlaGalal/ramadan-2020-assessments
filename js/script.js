@@ -6,19 +6,19 @@ const seachInput = document.getElementById("search");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  let data = [];
+  let data = {};
   Array.from(form.elements).forEach((element) => {
     if (element.classList.contains("form-control")) {
-      data.push(`${encodeURIComponent(element.name)}=${element.value}`);
+      data[element.name] = element.value;
     }
   });
-  data = data.join("&");
-  request.open("POST", "http://localhost:7777/video-request");
-  request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  request.send(data);
-  request.onreadystatechange = () => {
-    if (request.status === 200 && request.readyState === 4) getVideoesList();
-  };
+  fetch("http://localhost:7777/video-request", {
+    method: "POST",
+    body: JSON.stringify({ ...data }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(() => getVideoesList());
 });
 
 const insertVideos = (res) => {
@@ -75,16 +75,21 @@ const getVideoesList = (sort_type = "date") => {
 window.addEventListener("load", () => getVideoesList());
 
 const voteVideo = (vote_type, id) => {
-  request.open("PUT", "http://localhost:7777/video-request/vote");
-  request.setRequestHeader("Content-Type", "application/json");
-  request.send(JSON.stringify({ id, vote_type }));
-  request.onreadystatechange = () => {
-    if (request.status === 200 && request.readyState === 4) {
-      const votesObj = JSON.parse(request.responseText).votes;
+  fetch("http://localhost:7777/video-request/vote", {
+    method: "PUT",
+    body: JSON.stringify({
+      id, vote_type
+    }),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      const votesObj = res.votes;
       document.getElementById(id).querySelector(".total-votes").innerText =
         votesObj.ups - votesObj.downs;
-    }
-  };
+    });
 };
 
 dateSort.addEventListener("click", () => {
@@ -100,10 +105,13 @@ voteSort.addEventListener("click", () => {
 });
 
 seachInput.addEventListener("keyup", (e) => {
-  if(e.target.value) {
-    fetch(`http://localhost:7777/video-request/search?topic=${e.target.value}`, {
-      method: "GET",
-    })
+  if (e.target.value) {
+    fetch(
+      `http://localhost:7777/video-request/search?topic=${e.target.value}`,
+      {
+        method: "GET",
+      }
+    )
       .then((res) => res.json())
       .then((res) => insertVideos(res));
   } else getVideoesList();

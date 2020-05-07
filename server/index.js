@@ -11,10 +11,12 @@ if (!Object.keys(mongoose).length) return;
 app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.get("/", (req, res) =>
   res.send("Welcome to semicolon academy APIs, use /video-request to get data")
 );
+
 
 app.post("/video-request", async (req, res, next) => {
   const response = await VideoRequestData.createRequest(req.body);
