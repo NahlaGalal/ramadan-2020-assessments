@@ -9,14 +9,38 @@ let sort_type = "date",
 function debounce(fn, time) {
   let timeOut;
   return function (...args) {
-    clearTimeout(timeOut)
+    clearTimeout(timeOut);
     timeOut = setTimeout(() => fn.apply(this, args), time);
   };
 }
 
+const dataValidation = (elements) => {
+  const name = elements[0];
+  const email = elements[1];
+  const topic = elements[2];
+  const details = elements[4];
+  const emailPattern = /^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gm;
+  if (!name.value) name.classList.add("is-invalid");
+  if (!email.value || !emailPattern.test(email)) email.classList.add("is-invalid");
+  if (!topic.value || topic.value.length > 100) topic.classList.add("is-invalid");
+  if (!details.value) details.classList.add("is-invalid");
+  if (document.querySelectorAll(".is-invalid").length) {
+    document
+      .querySelectorAll(".is-invalid")
+      .forEach((elm) =>
+        elm.addEventListener("input", (e) =>
+          e.target.classList.remove("is-invalid")
+        )
+      );
+    return false;
+  }
+  return true;
+};
+
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   let data = {};
+  if (!dataValidation(form.elements)) return;
   Array.from(form.elements).forEach((element) => {
     if (element.classList.contains("form-control")) {
       data[element.name] = element.value;
@@ -120,7 +144,10 @@ voteSort.addEventListener("click", () => {
   getVideoesList("vote", search);
 });
 
-seachInput.addEventListener("keyup", debounce((e) => {
-  search = e.target.value;
-  getVideoesList(sort_type, e.target.value);
-}, 300));
+seachInput.addEventListener(
+  "keyup",
+  debounce((e) => {
+    search = e.target.value;
+    getVideoesList(sort_type, e.target.value);
+  }, 300)
+);

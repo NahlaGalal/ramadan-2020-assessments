@@ -11,18 +11,24 @@
 <body>
   <div class="container my-5">
     <div class="formContainer my-5">
-      <form method="POST">
+      <form method="POST" novalidate>
         <div class="row">
           <div class="col-md">
             <div class="form-group">
               <label for="author_name">Your name *</label>
-              <input class="form-control" name="author_name" placeholder="Write your name here" />
+              <input type="text" class="form-control" name="author_name" placeholder="Write your name here" />
+              <div class="invalid-feedback">
+                Please type your name.
+              </div>
             </div>
           </div>
           <div class="col-md">
             <div class="form-group">
               <label for="author_email">Your email *</label>
-              <input class="form-control" name="author_email" placeholder="Write your email here" />
+              <input type="email" class="form-control" name="author_email" placeholder="Write your email here" />
+              <div class="invalid-feedback">
+                Please type your email.
+              </div>
             </div>
           </div>
         </div>
@@ -31,7 +37,10 @@
           <div class="col-md">
             <div class="form-group">
               <label for="topic_title">Topic *</label>
-              <input class="form-control" name="topic_title" placeholder="Write your suggested topic here" />
+              <input type="text" class="form-control" name="topic_title" placeholder="Write your suggested topic here" />
+              <div class="invalid-feedback">
+                Please type topic title with less than 100 character.
+              </div>
             </div>
           </div>
           <div class="col-md">
@@ -51,6 +60,9 @@
               <label for="topic_details">More details *</label>
               <textarea class="form-control" name="topic_details"
                 placeholder="Write your topic in more details here"></textarea>
+                <div class="invalid-feedback">
+                  Please type more details.
+                </div>
             </div>
           </div>
           <div class="col-md">
