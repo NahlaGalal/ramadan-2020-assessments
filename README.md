@@ -2,7 +2,7 @@
 
 > Hi all, this is the repo that holds the assessments that covers ramadan 2020 series on [Semicolon academy](https://www.youtube.com/SemicolonAcademy) youtube channel, no implementations here, only the assessments, you could check later the resolutions on different repos on github as well, or watch the series and build it up together.
 
-In this repo you will find some given express server configured to make some basic CRUD operations for getting and setting a video request from semicolon academy (as an example), also you will find an HTML file that has basic design of the required elements styled as well with twitter bootstrap, you only need to clone it and install dependancies of server and configure a local mongodb connection, then you are ready to make your first assessment, goodluck 😉
+In this repo you will find some given express server configured to make some basic CRUD operations for getting and setting a video request from semicolon academy (as an example), also you will find an HTML file that has basic design of the required elements styled as well with twitter bootstrap, you only need to clone it and install dependencies of server and configure a local mongodb connection, then you are ready to make your first assessment, good luck 😉
 
 ---
 
@@ -20,8 +20,8 @@ In this repo you will find some given express server configured to make some bas
    - [ ] Make votes unique so no one could cheat, using unique user, enhance the voting experience.
    - [ ] Make a super user capabilities, delete, add resolution video, and change status. all are only visible to him.
    - [ ] Add style to the super user capabilities and make filter by request statuses (`NEW`, `PLANNED`, `DONE`).
-3. Feel free to enhance the APIs to suit your needs if needed.
-4. You are supposed after all to make the requests work using AJAX to make the project looks like a SPA.
-5. Check all payloads in the schema at `server/models/video-requests.model.js` and check the endpoints at `server/index.js`
-6. You are **obligated** to write only **pure JavaScript** code without using any external utility or libraries.
-7. You should not write any css code or styling effort as the provided `index.html` file has almost all what you need, but you can use the bootstrap provided classes.
+4. Feel free to enhance the APIs to suit your needs if needed.
+5. You are supposed after all to make the requests work using AJAX to make the project looks like a SPA.
+6. Check all payloads in the schema at `server/models/video-requests.model.js` and check the endpoints at `server/index.js`
+7. You are **obligated** to write only **pure JavaScript** code without using any external utility or libraries.
+8. You should not write any css code or styling effort as the provided `index.html` file has almost all what you need, but you can use the bootstrap provided classes.
