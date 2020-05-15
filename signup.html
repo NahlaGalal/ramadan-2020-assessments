@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+</head>
+
+<body>
+  <div class="container my-5">
+    <div class="formContainer my-5">
+      <h1>Signup form</h1>
+      <form method="POST" novalidate>
+        <div class="row">
+          <div class="col-md">
+            <div class="form-group">
+              <label for="author_name">Your name *</label>
+              <input type="text" class="form-control" name="author_name" placeholder="Write your name here" />
+              <div class="invalid-feedback">
+                Please type your name.
+              </div>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="form-group">
+              <label for="author_email">Your email *</label>
+              <input type="email" class="form-control" name="author_email" placeholder="Write your email here" />
+              <div class="invalid-feedback">
+                Please type your email.
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Signup</button>
+      </form>
+    </div>
+  </div>
+  <script src="js/signupScript.js"></script>
+</body>
+
+</html>
