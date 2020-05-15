@@ -1,6 +1,6 @@
 const form = document.querySelector("form");
-const dateSort = document.querySelector(".date-sort");
-const voteSort = document.querySelector(".vote-sort");
+const dateSort = document.querySelector("#date-sort");
+const voteSort = document.querySelector("#vote-sort");
 const box = document.getElementById("listOfRequests");
 const seachInput = document.getElementById("search");
 let sort_type = "date",
@@ -131,15 +131,15 @@ const voteVideo = (vote_type, id) => {
 };
 
 dateSort.addEventListener("click", () => {
-  dateSort.classList.add("active");
-  voteSort.classList.remove("active");
+  dateSort.parentElement.classList.add("active");
+  voteSort.parentElement.classList.remove("active");
   sort_type = "date";
   getVideoesList("date", search);
 });
 
 voteSort.addEventListener("click", () => {
-  dateSort.classList.remove("active");
-  voteSort.classList.add("active");
+  dateSort.parentElement.classList.remove("active");
+  voteSort.parentElement.classList.add("active");
   sort_type = "vote";
   getVideoesList("vote", search);
 });
