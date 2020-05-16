@@ -2,10 +2,10 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const port = process.env.PORT || 7777;
-const VideoRequestData = require('./data/video-requests.data');
-const UserData = require('./data/user.data');
-const cors = require('cors');
-const mongoose = require('./models/mongo.config');
+const VideoRequestData = require("./data/video-requests.data");
+const UserData = require("./data/user.data");
+const cors = require("cors");
+const mongoose = require("./models/mongo.config");
 
 if (!Object.keys(mongoose).length) return;
 
@@ -25,7 +25,7 @@ app.post("/video-request", async (req, res, next) => {
 });
 
 app.get("/video-request", async (req, res, next) => {
-  const { sort_type, topic } = req.query;
+  const { sort_type, topic, status_type } = req.query;
   let data;
   if (topic) {
     data = await VideoRequestData.searchRequests(topic);
@@ -37,11 +37,12 @@ app.get("/video-request", async (req, res, next) => {
       return aVotes < bVotes ? 1 : aVotes > bVotes ? -1 : 0;
     });
   }
+  if(status_type !== "All") data = data.filter((obj) => obj.status === status_type);
   res.send(data);
   next();
 });
 
-app.get('/users', async (req, res, next) => {
+app.get("/users", async (req, res, next) => {
   const response = await UserData.getAllUsers(req.query.id);
   res.send(response);
   next();
@@ -55,12 +56,16 @@ app.post("/users/login", async (req, res, next) => {
 
 app.put("/video-request/vote", async (req, res, next) => {
   const { id, vote_type, user_id } = req.body;
-  const response = await VideoRequestData.updateVoteForRequest(id, vote_type, user_id);
+  const response = await VideoRequestData.updateVoteForRequest(
+    id,
+    vote_type,
+    user_id
+  );
   res.send(response);
   next();
 });
 
-app.put('/video-request', async (req, res, next) => {
+app.put("/video-request", async (req, res, next) => {
   const { id, status, resVideo } = req.body;
 
   const response = await VideoRequestData.updateRequest(id, status, resVideo);
@@ -68,7 +73,7 @@ app.put('/video-request', async (req, res, next) => {
   next();
 });
 
-app.delete('/video-request', async (req, res, next) => {
+app.delete("/video-request", async (req, res, next) => {
   const response = await VideoRequestData.deleteRequest(req.body.id);
   res.send(response);
   next();

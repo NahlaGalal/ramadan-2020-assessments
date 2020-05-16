@@ -6,10 +6,12 @@ const dateSort = document.querySelector("#date-sort");
 const voteSort = document.querySelector("#vote-sort");
 const box = document.getElementById("listOfRequests");
 const seachInput = document.getElementById("search");
+const showStatus = document.getElementsByName("status");
 
 const userId = new URLSearchParams(window.location.search).get("id");
 let sort_type = "date",
-  search = "";
+  search = "",
+  status_type="All";
 
 function debounce(fn, time) {
   let timeOut;
@@ -77,6 +79,12 @@ const insertVideos = (res) => {
           </p>
         </div>
         <div class="d-flex flex-column text-center">
+        ${
+          element.status === "Done"
+            ? `
+            <iframe src=${element.video_ref.link}></iframe>
+        `
+            : `
           <a class="btn btn-link ${
             element.votes.ups.find((id) => id === userId) ? "disabled" : ""
           }" onclick="voteVideo('ups', '${element._id}')">🔺</a>
@@ -85,7 +93,8 @@ const insertVideos = (res) => {
           }</h3>
           <a class="btn btn-link ${
             element.votes.downs.find((id) => id === userId) ? "disabled" : ""
-          }" onclick="voteVideo('downs', '${element._id}')">🔻</a>
+          }" onclick="voteVideo('downs', '${element._id}')">🔻</a>`
+        }
         </div>
       </div>
       <div class="card-footer d-flex flex-row justify-content-between">
@@ -104,9 +113,9 @@ const insertVideos = (res) => {
   });
 };
 
-const getVideoesList = (sort_type = "date", search = "") => {
+const getVideoesList = (sort_type = "date", search = "", status_type = "All") => {
   fetch(
-    `http://localhost:7777/video-request?sort_type=${sort_type}&topic=${search}`,
+    `http://localhost:7777/video-request?sort_type=${sort_type}&topic=${search}&status_type=${status_type}`,
     {
       method: "GET",
     }
@@ -154,22 +163,31 @@ dateSort.addEventListener("click", () => {
   dateSort.parentElement.classList.add("active");
   voteSort.parentElement.classList.remove("active");
   sort_type = "date";
-  getVideoesList("date", search);
+  getVideoesList("date", search, status_type);
 });
 
 voteSort.addEventListener("click", () => {
   dateSort.parentElement.classList.remove("active");
   voteSort.parentElement.classList.add("active");
   sort_type = "vote";
-  getVideoesList("vote", search);
+  getVideoesList("vote", search, status_type);
 });
 
 seachInput.addEventListener(
   "keyup",
   debounce((e) => {
     search = e.target.value;
-    getVideoesList(sort_type, e.target.value);
+    getVideoesList(sort_type, e.target.value, status_type);
   }, 300)
+);
+
+showStatus.forEach((input) =>
+  input.addEventListener("change", (e) => {
+    showStatus.forEach((input) => input.parentElement.classList.remove("active"));
+    e.target.parentElement.classList.add("active");
+    status_type = e.target.id;
+    getVideoesList(sort_type, search, status_type);
+  })
 );
 
 if (userId === "5ebf73722a78b12bb0053b18") {
@@ -270,7 +288,8 @@ const insertAdminVideos = (res) => {
         changeVideoStatus(
           element._id,
           "Done",
-          document.getElementById(element._id).querySelector(".form-control").value
+          document.getElementById(element._id).querySelector(".form-control")
+            .value
         )
       );
   });
