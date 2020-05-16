@@ -14,7 +14,7 @@ var VideoRequestsSchema = mongoose.Schema(
       downs: { type: Array, default: [] },
     },
     target_level: { type: String, default: 'beginner' },
-    status: { type: String, default: 'new' },
+    status: { type: String, default: 'New' },
     video_ref: {
       link: { type: String, default: '' },
       date: { type: String, default: '' },

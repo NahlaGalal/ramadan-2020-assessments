@@ -1,8 +1,12 @@
+const videosPage = document.querySelector(".videos-page");
+const adminPage = document.querySelector(".admin-page");
+
 const form = document.querySelector("form");
 const dateSort = document.querySelector("#date-sort");
 const voteSort = document.querySelector("#vote-sort");
 const box = document.getElementById("listOfRequests");
 const seachInput = document.getElementById("search");
+
 const userId = new URLSearchParams(window.location.search).get("id");
 let sort_type = "date",
   search = "";
@@ -74,13 +78,13 @@ const insertVideos = (res) => {
         </div>
         <div class="d-flex flex-column text-center">
           <a class="btn btn-link ${
-            element.votes.ups.find(id => id === userId) ? "disabled" : ""
+            element.votes.ups.find((id) => id === userId) ? "disabled" : ""
           }" onclick="voteVideo('ups', '${element._id}')">🔺</a>
           <h3 class="total-votes">${
             element.votes.ups.length - element.votes.downs.length
           }</h3>
           <a class="btn btn-link ${
-            element.votes.downs.find(id => id === userId) ? "disabled" : ""
+            element.votes.downs.find((id) => id === userId) ? "disabled" : ""
           }" onclick="voteVideo('downs', '${element._id}')">🔻</a>
         </div>
       </div>
@@ -108,18 +112,22 @@ const getVideoesList = (sort_type = "date", search = "") => {
     }
   )
     .then((res) => res.json())
-    .then((res) => insertVideos(res));
+    .then((res) =>
+      userId === "5ebf73722a78b12bb0053b18"
+        ? insertAdminVideos(res)
+        : insertVideos(res)
+    );
 };
 
 window.addEventListener("load", () => getVideoesList());
 
-const voteVideo = (vote_type, id) => {  
+const voteVideo = (vote_type, id) => {
   fetch("http://localhost:7777/video-request/vote", {
     method: "PUT",
     body: JSON.stringify({
       id,
       vote_type,
-      user_id: userId
+      user_id: userId,
     }),
     headers: {
       "Content-Type": "application/json",
@@ -128,14 +136,14 @@ const voteVideo = (vote_type, id) => {
     .then((res) => res.json())
     .then((res) => {
       const votesObj = res.votes;
-      const totalVotes = document.getElementById(id).querySelector(".total-votes");
-      totalVotes.innerText =
-        votesObj.ups.length - votesObj.downs.length;
-      if(vote_type === "ups") {
+      const totalVotes = document
+        .getElementById(id)
+        .querySelector(".total-votes");
+      totalVotes.innerText = votesObj.ups.length - votesObj.downs.length;
+      if (vote_type === "ups") {
         totalVotes.previousElementSibling.classList.add("disabled");
         totalVotes.nextElementSibling.classList.remove("disabled");
-      }
-      else {
+      } else {
         totalVotes.previousElementSibling.classList.remove("disabled");
         totalVotes.nextElementSibling.classList.add("disabled");
       }
@@ -163,3 +171,127 @@ seachInput.addEventListener(
     getVideoesList(sort_type, e.target.value);
   }, 300)
 );
+
+if (userId === "5ebf73722a78b12bb0053b18") {
+  videosPage.classList.add("d-none");
+  adminPage.classList.remove("d-none");
+} else {
+  videosPage.classList.remove("d-none");
+  adminPage.classList.add("d-none");
+}
+
+const insertAdminVideos = (res) => {
+  adminPage.innerHTML = "";
+  res.forEach((element) => {
+    adminPage.innerHTML += `<div class="card mb-3" id=${element._id}>
+      <div class="card-header d-flex justify-content-between">
+        <div>
+          <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect-${
+            element._id
+          }">Preference</label>
+          <select class="custom-select mr-sm-2" id="inlineFormCustomSelect-${
+            element._id
+          }" >
+            <option value="New" ${
+              element.status === "New" ? "selected" : ""
+            }>New</option>
+            <option value="Planned" ${
+              element.status === "Planned" ? "selected" : ""
+            }>Planned</option>
+            <option value="Done" ${
+              element.status === "Done" ? "selected" : ""
+            }>Done</option>
+          </select>
+        </div>
+        <div class="input-group mr-5 ml-2 d-none">
+          <input type="text" class="form-control" placeholder="Paste here youtube link" aria-label="youtube-link" aria-describedby="youtube-link">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary save-url" type="button" id="youtube-link">Save</button>
+          </div>
+        </div>
+        <div>
+          <button class="btn btn-danger" onclick=deleteVideo("${
+            element._id
+          }")>Delete</button>
+        </div>
+      </div>
+      <div class="card-body d-flex justify-content-between flex-row">
+        <div class="d-flex flex-column">
+          <h3>${element.topic_title}</h3>
+          <p class="text-muted mb-2">${element.topic_details}</p>
+          <p class="mb-0 text-muted">
+            ${
+              element.expected_result &&
+              `<strong>Expected results:</strong> ${element.expected_result}`
+            }
+          </p>
+        </div>
+        <div class="d-flex flex-column text-center">
+          <a class="btn btn-link ${
+            element.votes.ups.find((id) => id === userId) ? "disabled" : ""
+          }" onclick="voteVideo('ups', '${element._id}')">🔺</a>
+          <h3 class="total-votes">${
+            element.votes.ups.length - element.votes.downs.length
+          }</h3>
+          <a class="btn btn-link ${
+            element.votes.downs.find((id) => id === userId) ? "disabled" : ""
+          }" onclick="voteVideo('downs', '${element._id}')">🔻</a>
+        </div>
+      </div>
+      <div class="card-footer d-flex flex-row justify-content-between">
+        <div>
+          <span class="text-info">${element.status}</span>
+          &bullet; added by <strong>${element.author_name}</strong> on
+          <strong class="submit-date">${new Date(
+            element.submit_date
+          ).toDateString()}</strong>
+        </div>
+        <div class="d-flex justify-content-center flex-column 408ml-auto mr-2">
+          <div class="badge badge-success">${element.target_level}</div>
+        </div>
+      </div>
+    </div>`;
+  });
+  res.forEach((element) => {
+    document
+      .querySelector(`#inlineFormCustomSelect-${element._id}`)
+      .addEventListener("change", (e) => {
+        if (e.target.value === "Done")
+          document
+            .getElementById(element._id)
+            .querySelector(".input-group")
+            .classList.remove("d-none");
+        else changeVideoStatus(element._id, e.target.value);
+      });
+    document
+      .getElementById(element._id)
+      .querySelector(".save-url")
+      .addEventListener("click", () =>
+        changeVideoStatus(
+          element._id,
+          "Done",
+          document.getElementById(element._id).querySelector(".form-control").value
+        )
+      );
+  });
+};
+
+const deleteVideo = (id) => {
+  fetch("http://localhost:7777/video-request", {
+    method: "DELETE",
+    body: JSON.stringify({ id }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(() => getVideoesList());
+};
+
+const changeVideoStatus = (id, status, resVideo = "") => {
+  fetch("http://localhost:7777/video-request", {
+    method: "PUT",
+    body: JSON.stringify({ id, status, resVideo }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(() => getVideoesList());
+};

@@ -22,7 +22,7 @@ module.exports = {
 
   updateRequest: (id, status, resVideo) => {
     const updates = {
-      status: status,
+      status,
       video_ref: {
         link: resVideo,
         date: resVideo && new Date(),
