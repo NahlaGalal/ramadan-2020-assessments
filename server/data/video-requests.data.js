@@ -12,7 +12,7 @@ module.exports = {
 
   searchRequests: (topic) => {
     return VideoRequest.find({
-      topic_title: { $regex: topic, $options: 'i' },
+      topic_title: { $regex: topic, $options: "i" },
     }).sort({ addedAt: "-1" });
   },
 
@@ -32,16 +32,13 @@ module.exports = {
     return VideoRequest.findByIdAndUpdate(id, updates, { new: true });
   },
 
-  updateVoteForRequest: async (id, vote_type) => {
-    const oldRequest = await VideoRequest.findById({ _id: id });
-    const other_type = vote_type === "ups" ? "downs" : "ups";
+  updateVoteForRequest: async (id, vote_type, user_id) => {
+    const anotherType = vote_type === "ups" ? "downs" : "ups";
     return VideoRequest.findByIdAndUpdate(
       { _id: id },
       {
-        votes: {
-          [vote_type]: ++oldRequest.votes[vote_type],
-          [other_type]: oldRequest.votes[other_type],
-        },
+        $push: { [`votes.${vote_type}`]: user_id },
+        $pull: { [`votes.${anotherType}`]: user_id}
       },
       {
         new: true,

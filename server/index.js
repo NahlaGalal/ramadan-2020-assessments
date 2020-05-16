@@ -32,8 +32,8 @@ app.get("/video-request", async (req, res, next) => {
   } else data = await VideoRequestData.getAllVideoRequests();
   if (sort_type === "vote") {
     data = data.sort((a, b) => {
-      let aVotes = a.votes.ups - a.votes.downs;
-      let bVotes = b.votes.ups - b.votes.downs;
+      let aVotes = a.votes.ups.length - a.votes.downs.length;
+      let bVotes = b.votes.ups.length - b.votes.downs.length;
       return aVotes < bVotes ? 1 : aVotes > bVotes ? -1 : 0;
     });
   }
@@ -42,7 +42,7 @@ app.get("/video-request", async (req, res, next) => {
 });
 
 app.get('/users', async (req, res, next) => {
-  const response = await UserData.getAllUsers(req.body);
+  const response = await UserData.getAllUsers(req.query.id);
   res.send(response);
   next();
 });
@@ -54,8 +54,8 @@ app.post("/users/login", async (req, res, next) => {
 });
 
 app.put("/video-request/vote", async (req, res, next) => {
-  const { id, vote_type } = req.body;
-  const response = await VideoRequestData.updateVoteForRequest(id, vote_type);
+  const { id, vote_type, user_id } = req.body;
+  const response = await VideoRequestData.updateVoteForRequest(id, vote_type, user_id);
   res.send(response);
   next();
 });

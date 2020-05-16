@@ -1,4 +1,4 @@
-var User = require('./../models/user.model');
+var User = require("./../models/user.model");
 
 module.exports = {
   createUser: async (userData) => {
@@ -10,7 +10,7 @@ module.exports = {
     return await newUser.save();
   },
 
-  getAllUsers: () => {
-    return User.find({});
+  getAllUsers: (id) => {
+    return User.findOne({ _id: id });
   },
 };
